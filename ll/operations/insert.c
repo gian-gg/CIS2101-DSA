@@ -69,19 +69,35 @@ void insert(LIST *HEAD, int index, int data) {
     *curr = temp;
 }
 
+// intelligently insert new data
+void insert_sorted(LIST *HEAD, int data) {
+    LIST *curr;
+    for(curr = HEAD; (*curr)!=NULL && data > (*curr)->data;curr=&(*curr)->link);
+
+    LIST temp = malloc(sizeof(struct node));
+    if(temp == NULL) {
+        printf("\nMALLOC FAILED!\n");
+        return;
+    }
+    
+    temp->data = data;
+    temp->link = *curr;
+    
+    *curr = temp;
+}
+
 int main() {
     LIST HEAD;
     init(&HEAD);
     
-    insert_start(&HEAD, 10);
-    insert_start(&HEAD, 20);
-    insert_start(&HEAD, 30);
-    insert_start(&HEAD, 40);
-    
-    display("LIST: ", HEAD);
-    
-    insert(&HEAD, 3, 99);
-    
+    insert_sorted(&HEAD, 200);
+    insert_sorted(&HEAD, 30);
+    insert_sorted(&HEAD, 10);
+    insert_sorted(&HEAD, 1000);
+    insert_sorted(&HEAD, 40);
+    insert_sorted(&HEAD, 20);
+    insert_sorted(&HEAD, 100);
+
     display("LIST: ", HEAD);
     
     return 0;
