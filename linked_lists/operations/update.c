@@ -20,16 +20,16 @@ void display(char string[], LIST HEAD) {
 void insert_end(LIST *HEAD, int data) {
     LIST *curr;
     for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link);
-    
+
     LIST temp = malloc(sizeof(struct node));
     if(temp == NULL) {
         printf("\nMALLOC FAILED!\n");
         return;
     }
-    
+
     temp->data = data;
     temp->link = NULL;
-    
+
     *curr = temp;
 }
 
@@ -58,6 +58,6 @@ int main() {
     update(&HEAD, 100, 44);
 
     display("After:\t", HEAD);
-    
+
     return 0;
 }
