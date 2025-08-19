@@ -31,48 +31,47 @@ LIST newNode(int data, struct node *link) {
 // inserts data at the end
 void insert_end(LIST *HEAD, int data) {
     LIST *curr;
-    for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link);
-    LIST temp = newNode(data, NULL);
-    *curr = temp;
+    for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link) {}
+    *curr = newNode(data, NULL);
 }
 // inserts data at the start
 void insert_start(LIST *HEAD, int data) {
-    LIST temp = newNode(data, *HEAD);
-    *HEAD = temp;
+    *HEAD = newNode(data, *HEAD);
 }
-// inserts data at the given index
+// inserts data at the given index (starts from 0)
 void insert(LIST *HEAD, int index, int data) {
     LIST *curr;
     int i = 0;
-    for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link) {
-        if (i++ > index-1) break;
-    }
-
-    LIST temp = newNode(data, *curr);
-    *curr = temp;
+    for(curr = HEAD; ((*curr) != NULL) && (i < index); curr = &(*curr)->link, i++) {}
+    *curr = newNode(data, *curr);
 }
-// intelligently insert new data
+// intelligently insert new data ascendingly
 void insert_sorted(LIST *HEAD, int data) {
     LIST *curr;
-    for(curr = HEAD; (*curr)!=NULL && data > (*curr)->data;curr=&(*curr)->link);
-
-    LIST temp = newNode(data, *curr);
-    *curr = temp;
+    for(curr = HEAD; (*curr)!=NULL && data > (*curr)->data;curr=&(*curr)->link) {}
+    *curr = newNode(data, *curr);
 }
 
 int main() {
     LIST HEAD;
     init(&HEAD);
 
-    insert_sorted(&HEAD, 200);
-    insert_sorted(&HEAD, 30);
-    insert_sorted(&HEAD, 10);
-    insert_sorted(&HEAD, 1000);
-    insert_sorted(&HEAD, 40);
-    insert_sorted(&HEAD, 20);
-    insert_sorted(&HEAD, 100);
+    insert_end(&HEAD, 200);
+    insert_end(&HEAD, 30);
+    insert_end(&HEAD, 500);
+    insert_end(&HEAD, 2000);
+    insert_end(&HEAD, 2000);
+    insert_end(&HEAD, 2000);
+    insert_end(&HEAD, 2000);
+    insert_end(&HEAD, 2000);
 
     display("LIST: ", HEAD);
+
+    insert(&HEAD, 1, 99);
+    insert(&HEAD, 8, 88);
+
+    display("LIST: ", HEAD);
+
 
     return 0;
 }
