@@ -55,24 +55,48 @@ void delete_all(LIST *HEAD) {
     init(HEAD);
 }
 
+void deleteElem(LIST *HEAD, int elem) {
+    LIST *curr;
+    for(curr = HEAD; (*curr) != NULL && (*curr)->data != elem; curr = &(*curr)->link);
+
+    if ((*curr) != NULL) {
+        LIST temp = *curr;
+        (*curr) = (*curr)->link;
+
+        free(temp);
+    }
+}
+
+void deleteAllOccur(LIST *HEAD, int elem) {
+    LIST *curr = HEAD;
+    while((*curr) != NULL) {
+        if ((*curr)->data == elem) {
+            LIST temp = *curr;
+            (*curr) = (*curr)->link;
+            free(temp);
+        } else {
+            curr = &(*curr)->link;
+        }
+    }
+}
 
 int main() {
     LIST HEAD;
     init(&HEAD);
 
     insert_end(&HEAD, 10);
-    insert_end(&HEAD, 20);
+    insert_end(&HEAD, 50);
+    insert_end(&HEAD, 50);
     insert_end(&HEAD, 30);
     insert_end(&HEAD, 40);
     insert_end(&HEAD, 50);
+    insert_end(&HEAD, 50);
+    insert_end(&HEAD, 50);
+
 
     display("LIST:\t", HEAD);
 
-    delete(&HEAD, 1);
-
-    display("LIST:\t", HEAD);
-
-    delete_all(&HEAD);
+    deleteAllOccur(&HEAD, 50);
 
     display("LIST:\t", HEAD);
 
