@@ -9,7 +9,6 @@ typedef struct node {
 void init(LIST *HEAD) {
     *HEAD = NULL;
 }
-
 void display(char string[], LIST HEAD) {
     printf("%s", string);
     for(LIST curr = HEAD; curr != NULL; curr = curr->link) {
@@ -17,38 +16,30 @@ void display(char string[], LIST HEAD) {
     }
     printf("\n");
 }
+LIST newNode(int data, struct node *link) {
+    LIST temp = malloc(sizeof(struct node));
+    if(temp == NULL) {
+        printf("\nMALLOC FAILED!\n");
+        return NULL;
+    }
 
+    temp->data = data;
+    temp->link = link;
+
+    return temp;
+}
 // inserts data at the end
 void insert_end(LIST *HEAD, int data) {
     LIST *curr;
     for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link);
-
-    LIST temp = malloc(sizeof(struct node));
-    if(temp == NULL) {
-        printf("\nMALLOC FAILED!\n");
-        return;
-    }
-
-    temp->data = data;
-    temp->link = NULL;
-
+    LIST temp = newNode(data, NULL);
     *curr = temp;
 }
-
 // inserts data at the start
 void insert_start(LIST *HEAD, int data) {
-    LIST temp = malloc(sizeof(struct node));
-    if(temp == NULL) {
-        printf("\nMALLOC FAILED!\n");
-        return;
-    }
-
-    temp->data = data;
-    temp->link = *HEAD;
-
+    LIST temp = newNode(data, *HEAD);
     *HEAD = temp;
 }
-
 // inserts data at the given index
 void insert(LIST *HEAD, int index, int data) {
     LIST *curr;
@@ -57,32 +48,15 @@ void insert(LIST *HEAD, int index, int data) {
         if (i++ > index-1) break;
     }
 
-    LIST temp = malloc(sizeof(struct node));
-    if(temp == NULL) {
-        printf("\nMALLOC FAILED!\n");
-        return;
-    }
-
-    temp->data = data;
-    temp->link = *curr;
-
+    LIST temp = newNode(data, *curr);
     *curr = temp;
 }
-
 // intelligently insert new data
 void insert_sorted(LIST *HEAD, int data) {
     LIST *curr;
     for(curr = HEAD; (*curr)!=NULL && data > (*curr)->data;curr=&(*curr)->link);
 
-    LIST temp = malloc(sizeof(struct node));
-    if(temp == NULL) {
-        printf("\nMALLOC FAILED!\n");
-        return;
-    }
-
-    temp->data = data;
-    temp->link = *curr;
-
+    LIST temp = newNode(data, *curr);
     *curr = temp;
 }
 
