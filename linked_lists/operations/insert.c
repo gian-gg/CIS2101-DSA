@@ -22,16 +22,16 @@ void display(char string[], LIST HEAD) {
 void insert_end(LIST *HEAD, int data) {
     LIST *curr;
     for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link);
-    
+
     LIST temp = malloc(sizeof(struct node));
     if(temp == NULL) {
         printf("\nMALLOC FAILED!\n");
         return;
     }
-    
+
     temp->data = data;
     temp->link = NULL;
-    
+
     *curr = temp;
 }
 
@@ -42,10 +42,10 @@ void insert_start(LIST *HEAD, int data) {
         printf("\nMALLOC FAILED!\n");
         return;
     }
-    
+
     temp->data = data;
     temp->link = *HEAD;
-    
+
     *HEAD = temp;
 }
 
@@ -56,16 +56,16 @@ void insert(LIST *HEAD, int index, int data) {
     for(curr = HEAD; (*curr) != NULL; curr = &(*curr)->link) {
         if (i++ > index-1) break;
     }
-    
+
     LIST temp = malloc(sizeof(struct node));
     if(temp == NULL) {
         printf("\nMALLOC FAILED!\n");
         return;
     }
-    
+
     temp->data = data;
     temp->link = *curr;
-    
+
     *curr = temp;
 }
 
@@ -79,17 +79,17 @@ void insert_sorted(LIST *HEAD, int data) {
         printf("\nMALLOC FAILED!\n");
         return;
     }
-    
+
     temp->data = data;
     temp->link = *curr;
-    
+
     *curr = temp;
 }
 
 int main() {
     LIST HEAD;
     init(&HEAD);
-    
+
     insert_sorted(&HEAD, 200);
     insert_sorted(&HEAD, 30);
     insert_sorted(&HEAD, 10);
@@ -99,6 +99,6 @@ int main() {
     insert_sorted(&HEAD, 100);
 
     display("LIST: ", HEAD);
-    
+
     return 0;
 }
