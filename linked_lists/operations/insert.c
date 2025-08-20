@@ -20,7 +20,7 @@ LIST newNode(int data, struct node *link) {
     LIST temp = malloc(sizeof(struct node));
     if(temp == NULL) {
         printf("\nMALLOC FAILED!\n");
-        return NULL;
+        exit(1);
     }
 
     temp->data = data;
