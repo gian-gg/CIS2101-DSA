@@ -5,39 +5,92 @@
 typedef struct node {
     char elem;
     struct node *link;
-} *charList;
+} *LIST;
 
-void insertStart(charList *L, char elem) {
-    charList temp = malloc(sizeof(struct node));
-    temp->elem = elem;
+void init(LIST*);
+void display(char[], LIST);
+void insertLast(LIST*, char);
 
-    temp->link = *L;
-    *L = temp;
+bool findElem(LIST*, char);
+void deleteElem(LIST*, char);
+void deleteAllOccur(LIST*, char);
+
+int main() {
+    LIST HEAD;
+    init(&HEAD);
+
+
+    insertLast(&HEAD, 'I');
+    insertLast(&HEAD, 'T');
+    insertLast(&HEAD, 'I');
+    insertLast(&HEAD, 'R');
+    insertLast(&HEAD, 'A');
+    insertLast(&HEAD, 'I');
+
+
+    display("BEFORE: ", HEAD);
+
+    deleteAllOccur(&HEAD, 'I');
+
+    display("AFTER: ", HEAD);
+
+    printf("\n");
+    return 0;
 }
 
-void display(charList L) {
-    for(charList curr = L; curr != NULL; curr = curr->link) {
-        printf("%c ", curr->elem);
+void init(LIST* HEAD) {
+    *HEAD = NULL;
+}
+void display(char string[], LIST HEAD) {
+    if (HEAD == NULL) {
+        printf("\nList is Empty!\n");
+        return;
+    }
+
+    printf("%s", string);
+
+    for(LIST curr = HEAD; curr!=NULL; curr=curr->link) {
+        printf("%c", curr->elem);
+    }
+
+    printf("\n");
+}
+void insertLast(LIST *HEAD, char elem) {
+    LIST *curr;
+    for(curr = HEAD; *curr!=NULL; curr=&(*curr)->link);
+
+    LIST newNode = malloc(sizeof(struct node));
+    newNode->elem = elem;
+    newNode->link = NULL;
+    *curr = newNode;
+}
+
+bool findElem(LIST* HEAD, char elem) {
+    LIST *curr;
+    for(curr=HEAD; *curr!=NULL && elem != (*curr)->elem; curr=&(*curr)->link);
+    return (*curr != NULL) ? true : false;
+}
+
+void deleteElem(LIST *HEAD, char elem) {
+    LIST *curr;
+    for(curr=HEAD; *curr!=NULL && elem != (*curr)->elem; curr = &(*curr)->link);
+
+    if (*curr != NULL) {
+        LIST temp = *curr;
+        *curr = temp->link;
+        free(temp);
     }
 }
 
-bool findElem(charList L, char X) {
-    charList curr;
-    for(curr = L; curr != NULL && curr->elem != X; curr = curr->link) {}
-
-    return curr != NULL;
-}
-
-int main() {
-    charList L = NULL;
-
-    insertStart(&L, 'C');
-    insertStart(&L, 'S');
-    insertStart(&L, 'U');
-
-    // printf("List: ");
-    // display(L);
-
-    printf("\nIs In List: %s\n", findElem(L, 'G') ? "true" : "false");
-    return 0;
+void deleteAllOccur(LIST *HEAD, char elem) {
+    LIST *curr=HEAD;
+    while(*curr!=NULL) {
+        if (elem == (*curr)->elem) {
+            LIST temp = *curr;
+            *curr = temp->link;
+            free(temp);
+        } else {
+            curr = &(*curr)->link;
+        }
+    }
 }
