@@ -73,7 +73,7 @@ void display(ARRAY list) {
     if (list.count == 0) {
         printf("\nLIST EMPTY\n");
     } else {
-        for(int i = 0; i < list.size;i++) {
+        for(int i = 0; i < list.count;i++) {
             printf("%c ", list.data[i]);
         }
         printf("\n");
