@@ -36,15 +36,15 @@ int main() {
 
     insertLast(&VH, &LIST, 'G');
     insertLast(&VH, &LIST, 'I');
-    insertFirst(&VH, &LIST, 'X');
     insertLast(&VH, &LIST, 'A');
     insertLast(&VH, &LIST, 'N');
-
+    insertFirst(&VH, &LIST, 'F');
     insertSorted(&VH, &LIST, 'E');
 
     displayList(VH, LIST);
 
-    deleteElem(&VH, &LIST, 'X');
+    deleteElem(&VH, &LIST, 'F');
+    deleteElem(&VH, &LIST, 'E');
 
     displayList(VH, LIST);
 
@@ -101,12 +101,12 @@ void insertLast(VirtualHeap *VH, listtype *LIST, char data) {
     int newNodeIdx = allocSpace(VH);
 
     if (newNodeIdx != -1) {
-        int curr;
-        for(curr=*LIST; VH->nodes[curr].link!=-1; curr=VH->nodes[curr].link) {}
+        int *curr;
+        for (curr = LIST; *curr != -1; curr = &(VH->nodes[*curr].link)) {}
 
         VH->nodes[newNodeIdx].data = data;
         VH->nodes[newNodeIdx].link = -1;
-        VH->nodes[curr].link = newNodeIdx;
+        *curr = newNodeIdx;
     } else {
         printf("\nNo More Space!\n");
     }
@@ -116,24 +116,24 @@ void insertSorted(VirtualHeap *VH, listtype *LIST, char data) {
     int newNodeIdx = allocSpace(VH);
 
     if (newNodeIdx != -1) {
-        int curr;
-        for(curr=*LIST; VH->nodes[curr].link!=-1 && VH->nodes[curr].data < data; curr=VH->nodes[curr].link) {}
+        int *curr;
+        for(curr = LIST; *curr != -1 && VH->nodes[*curr].data < data; curr = &(VH->nodes[*curr].link)) {}
 
         VH->nodes[newNodeIdx].data = data;
-        VH->nodes[newNodeIdx].link = VH->nodes[curr].link;
-        VH->nodes[curr].link = newNodeIdx;
+        VH->nodes[newNodeIdx].link = *curr;
+        *curr = newNodeIdx;
     } else {
         printf("\nNo More Space!\n");
     }
 }
 
 void deleteElem(VirtualHeap *VH, listtype *LIST, char elem) {
-    int curr;
-    for (curr=*LIST; curr != -1 && VH->nodes[VH->nodes[curr].link].data != elem; curr = VH->nodes[curr].link) {}
+    int *curr;
+    for (curr = LIST; *curr != -1 && VH->nodes[*curr].data != elem; curr = &(VH->nodes[*curr].link)) {}
 
-    if (curr != -1) {
-        int temp = VH->nodes[curr].link;
-        VH->nodes[curr].link = VH->nodes[temp].link;
+    if (*curr != -1) {
+        int temp = *curr;
+        *curr = VH->nodes[temp].link;
 
         deallocSpace(VH, temp);
     }
