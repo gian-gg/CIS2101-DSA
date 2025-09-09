@@ -1,10 +1,13 @@
-#include "header.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
+#define MAX 10
 
-struct DataStructure {
+typedef struct ARRAY {
     char data[MAX];
     int top; // index of the last element
-};
+} *LIST;
 
 void mode() {
     printf("=================\n");
@@ -12,19 +15,9 @@ void mode() {
     printf("=================\n");
 }
 
-
-LIST init() {
-    LIST L = malloc(sizeof(struct DataStructure));
-    L->top = -1;
-
-    return L;
-}
-
-void display(LIST L) {
-    for(int i = L->top; i >= 0; i--) {
-        printf("%c ", L->data[i]);
-    }
-    printf("\n");
+void init(LIST *L) {
+    *L = malloc(sizeof(struct ARRAY));
+    (*L)->top = -1;
 }
 
 void push(LIST* L, char elem) {

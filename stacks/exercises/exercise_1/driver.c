@@ -1,12 +1,14 @@
-// #include "array.c"
-#include "linked_list.c"
-// #include "cursor.c"
+#include "array.c"
+// #include "linked_list.c"
+
+void display(LIST);
+void insertBottom(LIST*,char);
 
 int main() {
     mode();
 
-
-    LIST L = init();
+    LIST L;
+    init(&L);
 
     push(&L, 'a');
     push(&L, 'b');
@@ -29,6 +31,51 @@ int main() {
     printf("\nIS FULL? %s", full(L) ? "true" : "false");
     printf("\nIS EMPTY? %s", empty(L) ? "true" : "false");
 
+
+    insertBottom(&L, 'X');
+
+    printf("\n");
+
+    display(L);
+
     printf("\n");
     return 0;
+}
+
+
+void display(LIST L) {
+    LIST temp;
+    init(&temp);
+
+    while(!empty(L)) {
+        char elem = top(L);
+        printf("%c ", elem);
+        push(&temp, elem);
+        pop(&L);
+    }
+
+    while(!empty(temp)) {
+        push(&L, top(temp));
+        pop(&temp);
+    }
+
+    printf("\n");
+}
+
+
+void insertBottom(LIST *L, char elem) {
+    LIST temp;
+    init(&temp);
+
+    while(!empty(*L)) {
+        push(&temp, top(*L));
+        pop(L);
+    }
+
+    push(L, elem);
+
+    while(!empty(temp)) {
+        push(L, top(temp));
+        pop(&temp);
+    }
 }

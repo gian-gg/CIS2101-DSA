@@ -1,9 +1,15 @@
-#include "header.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-struct DataStructure {
+typedef struct node {
     char elem;
-    struct DataStructure* link;
-};
+    struct node* link;
+} *LIST;
+
+void mode();
+void init(LIST*);
+
 
 void mode() {
     printf("=================\n");
@@ -11,22 +17,12 @@ void mode() {
     printf("=================\n");
 }
 
-LIST init() {
-    LIST L = NULL;
-
-    return L;
-}
-
-void display(LIST L) {
-    for(LIST trav = L; trav != NULL; trav = trav->link) {
-        printf("%c ", trav->elem);
-    }
-
-    printf("\n");
+void init(LIST *L) {
+    *L = NULL;
 }
 
 void push(LIST *L, char data) {
-    LIST temp = malloc(sizeof(struct DataStructure));
+    LIST temp = malloc(sizeof(struct node));
 
     temp->elem = data;
     temp->link = *L;
