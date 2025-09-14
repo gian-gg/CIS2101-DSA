@@ -3,7 +3,6 @@
 #include <stdbool.h>
 
 #define MAX 10
-#define EMPTY -1
 
 typedef struct {
     char data[MAX];
@@ -55,9 +54,9 @@ int main() {
 }
 
 void init(QUEUE* Q) {
-    Q->rear = 0;
-    Q->front = 1;
-}
+    Q->front = 0;
+    Q->rear = MAX - 1;
+} // initilize queue to be empty
 
 void visualize(QUEUE Q) {
     if (isEmpty(Q)) {
@@ -86,7 +85,7 @@ void visualize(QUEUE Q) {
 
 void enqueue(QUEUE* Q,char data) {
     if (isFull(*Q) != true) {
-        Q->rear = (Q->rear + 1) % MAX;
+        Q->rear = (Q->rear + 1) % MAX; // circular increment
         Q->data[Q->rear] = data;
     } else {
         printf("QUEUE IS FULL!\n");
@@ -94,12 +93,13 @@ void enqueue(QUEUE* Q,char data) {
 }
 
 void dequeue(QUEUE* Q) {
-    Q->front = (Q->front + 1) % MAX;
+    Q->front = (Q->front + 1) % MAX; // circular increment
 }
 
 bool isFull(QUEUE Q) {
     return ((Q.front == (Q.rear + 2) % MAX)) ? true : false;
-}
+} // queue is full if front is ahead of rear by 2
+
 bool isEmpty(QUEUE Q) {
     return ((Q.front == (Q.rear + 1) % MAX)) ? true : false;
-}
+} // queue is empty if front is ahead of rear by 1

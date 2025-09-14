@@ -1,4 +1,4 @@
-#include "array.c"
+// #include "array.c"
 // #include "linked_list.c"
 
 void display(LIST);
