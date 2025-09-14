@@ -1,0 +1,105 @@
+// Circular Array Implementation
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 10
+#define EMPTY -1
+
+typedef struct {
+    char data[MAX];
+    int front;
+    int rear;
+} QUEUE;
+
+void init(QUEUE*);
+void visualize(QUEUE);
+
+void enqueue(QUEUE*,char);
+void dequeue(QUEUE*);
+
+bool isFull(QUEUE);
+bool isEmpty(QUEUE);
+
+int main() {
+    QUEUE Q;
+    init(&Q);
+
+    enqueue(&Q, 'A');
+    enqueue(&Q, 'B');
+    enqueue(&Q, 'C');
+    enqueue(&Q, 'D');
+    enqueue(&Q, 'E');
+
+    dequeue(&Q);
+
+    enqueue(&Q, 'F');
+    enqueue(&Q, 'G');
+
+    dequeue(&Q);
+
+    enqueue(&Q, 'H');
+    enqueue(&Q, 'I');
+    enqueue(&Q, 'J');
+    enqueue(&Q, 'K');
+    enqueue(&Q, 'K');
+    enqueue(&Q, 'K');
+    enqueue(&Q, 'K');
+
+    dequeue(&Q);
+    enqueue(&Q, 'L');
+
+    visualize(Q);
+
+
+    return 0;
+}
+
+void init(QUEUE* Q) {
+    Q->rear = 0;
+    Q->front = 1;
+}
+
+void visualize(QUEUE Q) {
+    if (isEmpty(Q)) {
+        printf("Queue is empty!\n");
+        return;
+    }
+
+    printf("+-------+------+\n");
+    printf("| FRONT | REAR |\n");
+    printf("+-------+------+\n");
+    printf("|   %-3d |  %-3d |\n", Q.front, Q.rear);
+    printf("+-------+------+\n");
+
+    printf("+------+------+\n");
+    printf("| INDX | DATA |\n");
+    printf("+------+------+\n");
+
+
+    for (int i = Q.front; i != Q.rear; i = (i + 1) % MAX) {
+        printf("|  %3d |  %c   |\n", i, Q.data[i]);
+        printf("+------+------+\n");
+
+    }
+}
+
+
+void enqueue(QUEUE* Q,char data) {
+    if (isFull(*Q) != true) {
+        Q->rear = (Q->rear + 1) % MAX;
+        Q->data[Q->rear] = data;
+    } else {
+        printf("QUEUE IS FULL!\n");
+    }
+}
+
+void dequeue(QUEUE* Q) {
+    Q->front = (Q->front + 1) % MAX;
+}
+
+bool isFull(QUEUE Q) {
+    return ((Q.front == (Q.rear + 2) % MAX)) ? true : false;
+}
+bool isEmpty(QUEUE Q) {
+    return ((Q.front == (Q.rear + 1) % MAX)) ? true : false;
+}
