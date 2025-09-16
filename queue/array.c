@@ -11,10 +11,13 @@ typedef struct {
 } QUEUE;
 
 void init(QUEUE*);
+void display(QUEUE*);
 void visualize(QUEUE);
 
 void enqueue(QUEUE*,char);
 void dequeue(QUEUE*);
+
+char front(QUEUE);
 
 bool isFull(QUEUE);
 bool isEmpty(QUEUE);
@@ -58,6 +61,27 @@ void init(QUEUE* Q) {
     Q->rear = MAX - 1;
 } // initilize queue to be empty
 
+void display(QUEUE* Q) {
+    QUEUE temp;
+    init(&temp);
+
+    while(!isEmpty(*Q)) {
+        int frontElem = front(*Q);
+
+        printf("%d ", frontElem);
+
+        enqueue(&temp, frontElem);
+        dequeue(Q);
+    }
+
+    while(!isEmpty(temp)) {
+        enqueue(Q, front(temp));
+        dequeue(&temp);
+    }
+
+    printf("\n");
+}
+
 void visualize(QUEUE Q) {
     if (isEmpty(Q)) {
         printf("Queue is empty!\n");
@@ -94,6 +118,10 @@ void enqueue(QUEUE* Q,char data) {
 
 void dequeue(QUEUE* Q) {
     Q->front = (Q->front + 1) % MAX; // circular increment
+}
+
+char front(QUEUE Q) {
+    return Q.data[Q.front];
 }
 
 bool isFull(QUEUE Q) {
