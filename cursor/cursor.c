@@ -1,9 +1,8 @@
 #include <stdio.h>
-
-#define MAX 7
+#define MAX 10
 
 typedef struct {
-    char data;
+    int data;
     int link;
 } nodetype;
 
@@ -12,129 +11,127 @@ typedef struct {
     int avail;
 } VirtualHeap;
 
-typedef int listtype;
+typedef int listype;
 
-void initVirtualHeap(VirtualHeap*);
-int allocSpace(VirtualHeap*);
-void deallocSpace(VirtualHeap*,listtype);
+void initVH(VirtualHeap*);
+int alloc(VirtualHeap*);
+void dealloc(VirtualHeap*, int);
 
-void initList(listtype*);
-void displayList(VirtualHeap, listtype);
+void initList(listype*);
+void display(VirtualHeap,listype);
 
-void insertFirst(VirtualHeap*, listtype*,char);
-void insertLast(VirtualHeap*, listtype*,char);
-void insertSorted(VirtualHeap*, listtype*,char);
+void insertFirst(VirtualHeap*,listype*,int);
+void insertLast(VirtualHeap*,listype*,int);
+void insertSorted(VirtualHeap*,listype*,int);
 
-void deleteElem(VirtualHeap*, listtype*,char);
+void deleteElem(VirtualHeap*,listype*,int);
 
 int main() {
-    VirtualHeap VH;
-    listtype LIST;
+    VirtualHeap VH; initVH(&VH);
+    listype L; initList(&L);
 
-    initVirtualHeap(&VH);
-    initList(&LIST);
+    insertLast(&VH, &L, 10);
+    insertLast(&VH, &L, 20);
+    insertLast(&VH, &L, 30);
+    insertLast(&VH, &L, 40);
 
-    insertLast(&VH, &LIST, 'G');
-    insertLast(&VH, &LIST, 'I');
-    insertLast(&VH, &LIST, 'A');
-    insertLast(&VH, &LIST, 'N');
-    insertFirst(&VH, &LIST, 'F');
-    insertSorted(&VH, &LIST, 'E');
+    display(VH, L);
 
-    displayList(VH, LIST);
+    insertSorted(&VH, &L, 50);
+    insertSorted(&VH, &L, 25);
+    insertSorted(&VH, &L, 35);
 
-    deleteElem(&VH, &LIST, 'F');
-    deleteElem(&VH, &LIST, 'E');
+    display(VH, L);
 
-    displayList(VH, LIST);
+    deleteElem(&VH, &L, 35);
+    deleteElem(&VH, &L, 40);
+
+    display(VH, L);
 
     return 0;
 }
 
-void initVirtualHeap(VirtualHeap *VH) {
-    for (int i = MAX - 1; i >= 0; i--) {
-        VH->nodes[i].link = i - 1;
+void initVH(VirtualHeap* VH) {
+    for(int i = 0; i < MAX; i++) {
+        VH->nodes[i].link = i-1;
     }
-
-    VH->avail = MAX - 1;
+    VH->avail = MAX-1;
 }
 
-int allocSpace(VirtualHeap *VH) {
+int alloc(VirtualHeap* VH) {
     int idx = VH->avail;
 
-    if (idx != -1) {
+    if(idx != -1) {
         VH->avail = VH->nodes[idx].link;
     }
 
     return idx;
 }
 
-void deallocSpace(VirtualHeap* VH, int idx) {
+void dealloc(VirtualHeap* VH, int idx) {
     if (idx != -1) {
         VH->nodes[idx].link = VH->avail;
         VH->avail = idx;
     }
 }
 
-void initList(int* list) {
-    *list = -1;
+void initList(listype *L) {
+    *L = -1;
 }
 
-void displayList(VirtualHeap VH, listtype LIST) {
-    for(int curr = LIST; curr != -1; curr = VH.nodes[curr].link) {
-        printf("%c ", VH.nodes[curr].data);
+void display(VirtualHeap VH, listype L) {
+    for(int trav = L; trav != -1; trav=VH.nodes[trav].link) {
+        printf("%d ", VH.nodes[trav].data);
     }
     printf("\n");
 }
 
-void insertFirst(VirtualHeap* VH, listtype* LIST,char data) {
-    int newNodeIdx = allocSpace(VH);
+void insertLast(VirtualHeap* VH,listype* L,int data) {
+    int newNode = alloc(VH);
 
-    if (newNodeIdx != 1) {
-        VH->nodes[newNodeIdx].data = data;
-        VH->nodes[newNodeIdx].link = *LIST;
-        *LIST = newNodeIdx;
+    if (newNode != -1) {
+        listype *trav;
+        for(trav = L; *trav != -1; trav=&(VH->nodes[*trav].link)) {}
+
+        VH->nodes[newNode].data = data;
+        VH->nodes[newNode].link = -1;
+
+        *trav = newNode;
     }
 }
 
-void insertLast(VirtualHeap *VH, listtype *LIST, char data) {
-    int newNodeIdx = allocSpace(VH);
+void insertFirst(VirtualHeap* VH,listype* L,int data) {
+    int newNode = alloc(VH);
 
-    if (newNodeIdx != -1) {
-        int *curr;
-        for (curr = LIST; *curr != -1; curr = &(VH->nodes[*curr].link)) {}
+    if (newNode != -1) {
+        VH->nodes[newNode].data = data;
+        VH->nodes[newNode].link = *L;
 
-        VH->nodes[newNodeIdx].data = data;
-        VH->nodes[newNodeIdx].link = -1;
-        *curr = newNodeIdx;
-    } else {
-        printf("\nNo More Space!\n");
+        *L = newNode;
     }
 }
 
-void insertSorted(VirtualHeap *VH, listtype *LIST, char data) {
-    int newNodeIdx = allocSpace(VH);
+void insertSorted(VirtualHeap* VH,listype* L,int data) {
+    int newNode = alloc(VH);
 
-    if (newNodeIdx != -1) {
-        int *curr;
-        for(curr = LIST; *curr != -1 && VH->nodes[*curr].data < data; curr = &(VH->nodes[*curr].link)) {}
+    if (newNode != -1) {
+        listype *trav;
+        for(trav = L; (*trav != -1) && data > VH->nodes[*trav].data ; trav=&(VH->nodes[*trav].link)) {}
 
-        VH->nodes[newNodeIdx].data = data;
-        VH->nodes[newNodeIdx].link = *curr;
-        *curr = newNodeIdx;
-    } else {
-        printf("\nNo More Space!\n");
+        VH->nodes[newNode].data = data;
+        VH->nodes[newNode].link = *trav;
+
+        *trav = newNode;
     }
 }
 
-void deleteElem(VirtualHeap *VH, listtype *LIST, char elem) {
-    int *curr;
-    for (curr = LIST; *curr != -1 && VH->nodes[*curr].data != elem; curr = &(VH->nodes[*curr].link)) {}
+void deleteElem(VirtualHeap* VH,listype* L,int data) {
+    listype *trav;
+    for(trav = L; (*trav != -1) && data != VH->nodes[*trav].data ; trav=&(VH->nodes[*trav].link)) {}
 
-    if (*curr != -1) {
-        int temp = *curr;
-        *curr = VH->nodes[temp].link;
-
-        deallocSpace(VH, temp);
+    if (*trav != -1) {
+        listype temp = *trav;
+        *trav = VH->nodes[temp].link;
+        dealloc(VH, temp);
     }
 }
