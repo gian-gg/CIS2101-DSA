@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct node {
     char data;
@@ -9,52 +10,66 @@ typedef struct node {
 typedef struct {
     nodetype front;
     nodetype rear;
-} queue;
+} QUEUE;
 
-void init(queue*);
-void display(queue);
+void display(QUEUE*);
 
-void enqueue(queue*,char);
-void dequeue(queue*);
+void init(QUEUE*);
 
-char front(queue);
-char rear(queue);
+void enqueue(QUEUE*,char);
+void dequeue(QUEUE*);
+
+char front(QUEUE);
+
+bool isFull(QUEUE);
+bool isEmpty(QUEUE);
 
 int main() {
-    queue Q;
+    QUEUE Q;
     init(&Q);
 
-    enqueue(&Q, 'G');
-    enqueue(&Q, 'I');
-    enqueue(&Q, 'A');
-    enqueue(&Q, 'N');
+    printf("isEmpty: %s\n", isEmpty(Q) ? "TRUE" : "FALSE");
 
-    display(Q);
+    enqueue(&Q, 10);
+    printf("isEmpty: %s\n", isEmpty(Q) ? "TRUE" : "FALSE");
+    enqueue(&Q, 20);
+    enqueue(&Q, 30);
+    enqueue(&Q, 40);
+
+    display(&Q);
 
     dequeue(&Q);
 
-    display(Q);
-
-
-    printf("FRONT: %c\n", front(Q));
-    printf("REAR: %c\n", rear(Q));
+    display(&Q);
 
     return 0;
 }
 
-void init(queue* Q) {
+void display(QUEUE* Q) {
+    QUEUE temp;
+    init(&temp);
+
+    while (!isEmpty(*Q)) {
+        int frontElem = front(*Q);
+        printf("%d ", frontElem);
+        enqueue(&temp, frontElem);
+        dequeue(Q);
+    }
+
+    while (!isEmpty(temp)) {
+        enqueue(Q, front(temp));
+        dequeue(&temp);
+    }
+
+    printf("\n");
+}
+
+void init(QUEUE* Q) {
     Q->front=NULL;
     Q->rear=NULL;
 } // set both front and rear pointers to be NULL, empty
 
-void display(queue Q) {
-    for(nodetype trav = Q.front; trav!=NULL; trav=trav->link) {
-        printf("%c ", trav->data);
-    }
-    printf("\n");
-} // traversal is legal in queues
-
-void enqueue(queue* Q,char data) {
+void enqueue(QUEUE* Q,char data) {
     nodetype newNode = malloc(sizeof(struct node));
 
     if (newNode != NULL) { // check if malloc was successful
@@ -71,7 +86,7 @@ void enqueue(queue* Q,char data) {
     }
 }
 
-void dequeue(queue* Q) {
+void dequeue(QUEUE* Q) {
     nodetype temp = Q->front;
     Q->front = Q->front->link;
     free(temp);
@@ -79,10 +94,14 @@ void dequeue(queue* Q) {
     if (Q->front == NULL) Q->rear = NULL; // queue is empty, also update rear
 }
 
-char front(queue Q) {
+char front(QUEUE Q) {
     return Q.front->data;
 }
-char rear(queue Q) {
-    return Q.rear->data;
 
+bool isFull(QUEUE Q) {
+    return false;
+}
+
+bool isEmpty(QUEUE Q) {
+    return (Q.front == NULL) && (Q.rear == NULL);
 }
