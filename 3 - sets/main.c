@@ -32,7 +32,7 @@ int main() {
     
     
     SET* C = Union(A, B);
-    printf("A ∪ B = ");
+    printf("A U B = ");
     read(*C);
     
     SET* D = Intersection(A, B);

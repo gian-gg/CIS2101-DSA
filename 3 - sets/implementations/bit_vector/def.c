@@ -44,7 +44,7 @@ void read(SET S) {
 
     int idx;
     for(idx = 0; idx < MAX; idx++) {
-        if (S[idx] == 1) printf("%d ", idx);
+        if (S[idx] == 1) printf("%d, ", idx);
     }
 
     printf("}\n");
