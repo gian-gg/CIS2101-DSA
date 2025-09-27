@@ -1,8 +1,7 @@
-#include "./implementations/bit_vector/header.h"
+#include "./implementations/computer_word/header.h"
 
 int main() {
     mode();
-    
     
     SET A;
     init(&A);
@@ -31,17 +30,17 @@ int main() {
     printf("\nA %s B\n", (equal(A, B)) ? "==" : "!=");
     
     
-    SET* C = Union(A, B);
+    SET* U = Union(A, B);
     printf("A U B = ");
-    read(*C);
+    read(*U);
     
-    SET* D = Intersection(A, B);
+    SET* I = Intersection(A, B);
     printf("A ∩ B = ");
-    read(*D);
+    read(*I);
     
-    SET* E = Difference(A, B);
+    SET* D = Difference(A, B);
     printf("A - B = ");
-    read(*E);
+    read(*D);
     
     
     return 0;
