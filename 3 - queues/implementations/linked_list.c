@@ -12,6 +12,7 @@ typedef struct {
     nodetype rear;
 } QUEUE;
 
+
 void display(QUEUE*);
 
 void init(QUEUE*);
@@ -24,26 +25,6 @@ char front(QUEUE);
 bool isFull(QUEUE);
 bool isEmpty(QUEUE);
 
-int main() {
-    QUEUE Q;
-    init(&Q);
-
-    printf("isEmpty: %s\n", isEmpty(Q) ? "TRUE" : "FALSE");
-
-    enqueue(&Q, 10);
-    printf("isEmpty: %s\n", isEmpty(Q) ? "TRUE" : "FALSE");
-    enqueue(&Q, 20);
-    enqueue(&Q, 30);
-    enqueue(&Q, 40);
-
-    display(&Q);
-
-    dequeue(&Q);
-
-    display(&Q);
-
-    return 0;
-}
 
 void display(QUEUE* Q) {
     QUEUE temp;

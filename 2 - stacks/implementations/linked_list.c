@@ -5,10 +5,8 @@
 typedef struct node {
     char elem;
     struct node* link;
-} *LIST;
+} *STACK;
 
-void mode();
-void init(LIST*);
 
 
 void mode() {
@@ -17,32 +15,32 @@ void mode() {
     printf("=================\n");
 }
 
-void init(LIST *L) {
+void init(STACK *L) {
     *L = NULL;
-} // set pointer to list to null, empty
+} // set pointer to STACK to null, empty
 
-void push(LIST *L, char data) {
-    LIST temp = malloc(sizeof(struct node));
+void push(STACK *L, char data) {
+    STACK temp = malloc(sizeof(struct node));
 
     temp->elem = data;
     temp->link = *L; // link new node is next node
     *L = temp; // update link header to point at newNode
 }
 
-void pop(LIST* L) {
-    LIST temp = *L; // point to the target node
+void pop(STACK* L) {
+    STACK temp = *L; // point to the target node
     *L = temp->link; // update link to next node, skipping target node
     free(temp); // delete target node
 }
 
-char top(LIST L) {
+char top(STACK L) {
     return L->elem;
 }
 
-bool empty(LIST L) {
+bool empty(STACK L) {
     return L == NULL ? true : false;
 }
 
-bool full(LIST L) {
+bool full(STACK L) {
     return false; // only time stack is full when there is
 } // no more space on the heap, might check using malloc

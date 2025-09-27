@@ -1,13 +1,14 @@
-// #include "array.c"
-// #include "linked_list.c"
+#include "./implementations/array.c"
+// #include "./implementations/linked_list.c"
+// #include "./implementations/cursor.c"
 
-void display(LIST);
-void insertBottom(LIST*,char);
+void display(STACK);
+void insertBottom(STACK*,char);
 
 int main() {
     mode();
 
-    LIST L;
+    STACK L;
     init(&L);
 
     push(&L, 'a');
@@ -43,8 +44,8 @@ int main() {
 }
 
 
-void display(LIST L) {
-    LIST temp;
+void display(STACK L) {
+    STACK temp;
     init(&temp);
 
     while(!empty(L)) {
@@ -63,8 +64,8 @@ void display(LIST L) {
 }
 
 
-void insertBottom(LIST *L, char elem) {
-    LIST temp;
+void insertBottom(STACK *L, char elem) {
+    STACK temp;
     init(&temp);
 
     while(!empty(*L)) {
