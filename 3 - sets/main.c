@@ -1,4 +1,4 @@
-#include "./implementations/array/header.h"
+#include "./implementations/bit_vector/header.h"
 
 int main() {
     mode();
@@ -9,17 +9,19 @@ int main() {
     SET B;
     init(&B);
     
-    insert(&A, 10);
-    insert(&A, 20);
-    insert(&A, 30);
-    insert(&A, 40);
-    insert(&A, 101);
+    insert(&A, 1);
+    insert(&A, 2);
+    insert(&A, 3);
+    insert(&A, 4);
+    insert(&A, 11);
     
-    insert(&B, 40);
-    insert(&B, 20);
+    insert(&B, 4);
+    insert(&B, 2);
+    insert(&B, 1);
     insert(&B, 10);
-    insert(&B, 100);
-    insert(&B, 30);
+    insert(&B, 3);
+    
+    insert(&A, 10);
     
     printf("\nA = ");
     read(A);
@@ -30,7 +32,7 @@ int main() {
     
     
     SET* C = Union(A, B);
-    printf("A U B = ");
+    printf("A ∪ B = ");
     read(*C);
     
     SET* D = Intersection(A, B);
