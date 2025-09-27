@@ -13,7 +13,7 @@ int main() {
     insert(&A, 20);
     insert(&A, 30);
     insert(&A, 40);
-    insert(&A, 100);
+    insert(&A, 101);
     
     insert(&B, 40);
     insert(&B, 20);
