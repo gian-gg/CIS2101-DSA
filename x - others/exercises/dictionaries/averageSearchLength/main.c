@@ -13,11 +13,7 @@ typedef char DICTIONARY[MAX];
 int hash(char); // returns the hash value of the given value
 void init(DICTIONARY); // initializes the DICTIONARY (makeNull)
 int insert(DICTIONARY, char); // inserts an element
-void delete(DICTIONARY, char); // deletes the given element
-bool member(DICTIONARY, char); // returns true if an element is a member of the given DICTIONARY, otherwise false
-
 void visualize(DICTIONARY); // visualize the elements
-void display(DICTIONARY); // displays the elements side-by-side
 
 int searchLength(int hashVal, int actualLoc) {
     return ((actualLoc - hashVal + MAX) % MAX) + 1;
@@ -85,28 +81,6 @@ int insert(DICTIONARY D, char data) {
     }
 }
 
-void delete(DICTIONARY D, char data) {
-    int hashValue = hash(data);
-
-    int idx, trav;
-    for (idx = 0, trav = hashValue; idx < MAX && D[trav] != EMPTY && D[trav] != data; idx++, trav = (hashValue + idx) % MAX) {}
-
-    if (idx < MAX && D[trav] == data) {
-        D[trav] = DELETED;
-    } else {
-        printf("%c not found in dictionary\n", data);
-    }
-}
-
-bool member(DICTIONARY D, char data) {
-    int hashValue = hash(data);
-
-    int idx, trav;
-    for (idx = 0, trav = hashValue; idx < MAX && D[trav] != EMPTY && D[trav] != data; idx++, trav = (hashValue + idx) % MAX) {}
-
-    return (idx < MAX && D[trav] == data) ? true : false;
-}
-
 void visualize(DICTIONARY D) {
     for (int idx = 0; idx < MAX; idx++) {
         char currElem = D[idx];
@@ -117,17 +91,6 @@ void visualize(DICTIONARY D) {
             printf("[ %3s ]\n", "DEL");
         } else {
             printf("[ %3c ]\n", currElem);
-        }
-    }
-    printf("\n");
-}
-
-void display(DICTIONARY D) {
-    for (int idx = 0; idx < MAX; idx++) {
-        char currElem = D[idx];
-
-        if (currElem != EMPTY && currElem != DELETED) {
-            printf("%c ", currElem);
         }
     }
     printf("\n");
