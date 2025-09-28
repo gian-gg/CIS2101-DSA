@@ -19,11 +19,12 @@ void insert(DICTIONARY D, int data) {
     nodetype newNode = malloc(sizeof(struct node));
 
     if (newNode != NULL) {
-        int hashValue = hash(data);
+        nodetype *trav;
+        for(trav = &(D[hash(data)]); *trav != NULL && (*trav)->data != data; trav = &((*trav)->link)) {}
 
         newNode->data = data;
-        newNode->link = D[hashValue];
-        D[hashValue] = newNode;
+        newNode->link = *trav;
+        *trav = newNode;
     }
 }
 
