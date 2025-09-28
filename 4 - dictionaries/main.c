@@ -1,23 +1,28 @@
-#include "./implementations/open_hashing/header.h"
+#include "./implementations/closed_hashing/v1/header.h"
+// #include "./implementations/open_hashing/header.h"
 
 int main() {
-    mode();
-
     DICTIONARY D;
     init(D);
 
-    insert(D, 10);
-    insert(D, 200);
-    insert(D, 2);
-    insert(D, 33);
-    insert(D, 43);
+    mode();
+
+    insert(D, 15);
+    insert(D, 25);
+    insert(D, 35);
+    insert(D, 5);
 
     visualize(D);
 
-    delete(D, 200);
-    delete(D, 33);
+    printf("Is 25 in Dictionary? %s\n", member(D, 25) ? "YES" : "NO");
+    printf("Is 100 in Dictionary? %s\n", member(D, 100) ? "YES" : "NO");
+
+    delete(D, 25);
 
     visualize(D);
+
+    printf("After deleting 25:\n");
+    printf("Is 25 in Dictionary? %s\n", member(D, 25) ? "YES" : "NO");
 
     display(D);
 
