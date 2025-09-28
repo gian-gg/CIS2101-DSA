@@ -20,7 +20,7 @@ int main() {
     printf("Is 25 in Dictionary? %s\n", member(D, 25) ? "YES" : "NO");
     printf("Is 100 in Dictionary? %s\n\n", member(D, 100) ? "YES" : "NO");
 
-    // delete(&D, 25);
+    delete(&D, 25);
 
     visualize(D);
 

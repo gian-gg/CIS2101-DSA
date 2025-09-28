@@ -77,5 +77,10 @@ void visualize(DICTIONARY D) {
 }
 
 void display(DICTIONARY D) {
-    
+    for(int idx = 0; idx <= D.last; idx++) {
+        int currElem = D.array[idx];
+        if (currElem != EMPTY) printf("%d ", currElem);
+    }
+
+    printf("\n");
 }
