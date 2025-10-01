@@ -1,77 +1,86 @@
 #include "header.h"
 
 void mode() {
-    printf("DICTIONARIES - CLOSED HASHING v1\n");
+    printf("DICTIONARIES - CLOSED HASHING v3\n");
     printf("================================\n\n");
 }
 
 int hash(int data) {
-    return data % MAX;
+    return data % DICT_SIZE;
 }
 
-void init(DICTIONARY D) {
-    for(int idx = 0; idx < MAX; idx++) {
-        D[idx] = EMPTY;
+void init(DICTIONARY *D) {
+    for(int idx = 0; idx < DICT_SIZE; idx++) {
+        D->array[idx] = EMPTY;
     }
+    D->last = DICT_SIZE-1;
 }
 
-void insert(DICTIONARY D, int data) {
+void insert(DICTIONARY *D, int data) {
     int hashValue = hash(data);
 
-    int idx, trav;
-    for (idx = 0, trav = hashValue; idx < MAX && D[trav] != EMPTY && D[trav] != DELETED; idx++, trav = (hashValue + idx) % MAX) {}
-
-    if (idx < MAX) {
-        D[trav] = data;
+    if (D->array[hashValue] == EMPTY) {
+        D->array[hashValue] = data;
+    } else if (D->last < MAX) {
+        D->array[++(D->last)] = data;
     } else {
         printf("Hash table full! Cannot insert %d\n", data);
     }
 }
 
-void delete(DICTIONARY D, int data) {
+void delete(DICTIONARY *D, int data) {
     int hashValue = hash(data);
 
-    int idx, trav;
-    for (idx = 0, trav = hashValue; idx < MAX && D[trav] != EMPTY && D[trav] != data; idx++, trav = (hashValue + idx) % MAX) {}
-
-    if (idx < MAX && D[trav] == data) {
-        D[trav] = DELETED;
+    if (D->array[hashValue] == data) {
+        D->array[hashValue] = EMPTY;
     } else {
-        printf("%d not found in dictionary\n", data);
+        int idx;
+        for(idx = DICT_SIZE; idx < MAX && D->array[idx] != data; idx++) {}
+
+        if (idx < MAX) {
+            D->array[idx] = D->array[D->last--];
+        } else {
+            printf("%d not found in dictionary\n", data);
+        }
     }
 }
 
 bool member(DICTIONARY D, int data) {
     int hashValue = hash(data);
 
-    int idx, trav;
-    for (idx = 0, trav = hashValue; idx < MAX && D[trav] != EMPTY && D[trav] != data; idx++, trav = (hashValue + idx) % MAX) {}
+    if (D.array[hashValue] == data) {
+        return true;
+    } else {
+        int idx;
+        for(idx = DICT_SIZE; idx < MAX && D.array[idx] != data; idx++) {}
 
-    return (idx < MAX && D[trav] == data) ? true : false;
+        return (idx < MAX) ? true : false;
+    }
 }
 
 void visualize(DICTIONARY D) {
-    for (int idx = 0; idx < MAX; idx++) {
-        int currElem = D[idx];
-        
-        if (currElem == EMPTY) {
-            printf("[ %3s ]\n", "EMP");
-        } else if (currElem == DELETED) {
-            printf("[ %3s ]\n", "DEL");
+    printf("LAST: %d\n", D.last);
+    for(int idx = 0; idx <= D.last; idx++) {
+        int currElem = D.array[idx];
+
+        if (idx == DICT_SIZE) printf("=======\n");
+
+        if (currElem != EMPTY) {
+            printf("[ %3d ]", currElem);
         } else {
-            printf("[ %3d ]\n", currElem);
+            printf("[ %3s ]", "EMP");
         }
+        printf("\n");
     }
+
     printf("\n");
 }
 
 void display(DICTIONARY D) {
-    for (int idx = 0; idx < MAX; idx++) {
-        int currElem = D[idx];
-
-        if (currElem != EMPTY && currElem != DELETED) {
-            printf("%d ", currElem);
-        }
+    for(int idx = 0; idx <= D.last; idx++) {
+        int currElem = D.array[idx];
+        if (currElem != EMPTY) printf("%d ", currElem);
     }
+
     printf("\n");
 }

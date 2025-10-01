@@ -6,20 +6,24 @@
 #include <stdbool.h>
 
 
-#define MAX 10
+#define DICT_SIZE 10
+#define OVERFLOW_SIZE 5
+#define MAX DICT_SIZE+OVERFLOW_SIZE
 
-typedef int DICTIONARY[MAX];
+typedef struct {
+    int array[DICT_SIZE + OVERFLOW_SIZE];
+    int last;
+} DICTIONARY;
 
 #define EMPTY   -1
-#define DELETED -2
 
 
 void mode(); // for funsies
 
 int hash(int); // returns the hash value of the given value
-void init(DICTIONARY); // initializes the DICTIONARY (makeNull)
-void insert(DICTIONARY, int); // inserts an element
-void delete(DICTIONARY, int); // deletes the given element
+void init(DICTIONARY*); // initializes the DICTIONARY (makeNull)
+void insert(DICTIONARY*, int); // inserts an element
+void delete(DICTIONARY*, int); // deletes the given element
 bool member(DICTIONARY, int); // returns true if an element is a member of the given DICTIONARY, otherwise false
 
 void visualize(DICTIONARY); // visualize the elements

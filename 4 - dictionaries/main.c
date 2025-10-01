@@ -3,21 +3,21 @@
 
 int main() {
     DICTIONARY D;
-    init(D);
+    init(&D);
 
     mode();
 
-    insert(D, 15);
-    insert(D, 25);
-    insert(D, 35);
-    insert(D, 5);
+    insert(&D, 15);
+    insert(&D, 25);
+    insert(&D, 35);
+    insert(&D, 5);
 
     visualize(D);
 
     printf("Is 25 in Dictionary? %s\n", member(D, 25) ? "YES" : "NO");
     printf("Is 100 in Dictionary? %s\n", member(D, 100) ? "YES" : "NO");
 
-    delete(D, 25);
+    delete(&D, 25);
 
     visualize(D);
 
