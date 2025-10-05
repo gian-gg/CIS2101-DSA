@@ -1,87 +1,83 @@
-#include "./header.h"
+#include "header.h"
 
-#define BIT_MASK(x) (1U << (x))
-#define MAX_BITS (sizeof(SET) * 8) 
+#define MAX_BITS (sizeof(SET) * 8)
+#define BIT_MASK(n) (1 << n)
 
 
-void mode() {
-    printf("SETS - COMPUTER WORD\n");
-    printf("==================\n\n");
+
+void initSet(SET* A) {
+    *A = 0;
 }
 
-void init(SET* S) {
-    *S = 0;
-}
-
-bool isFull(SET S) {
-    return S == ~0U;
-}
-
-bool isEmpty(SET S) {
-    return (S == 0);
-}
-
-bool member(SET S, int data) {
-    if (data < 0 || data >= MAX_BITS) return false;
-
-    return (S & BIT_MASK(data)) != 0;
-}
-
-void insert(SET* S, int data) {
-    if (data >= 0 && data < MAX_BITS) *S |= BIT_MASK(data);
-        
-}
-
-void delete(SET* S, int data) {
-    if (data >= 0 && data < MAX_BITS) *S &= ~BIT_MASK(data);
-}
-
-
-void read(SET S) {
-    printf("{ ");
-    for (int idx = 0; idx < MAX_BITS; idx++) {
-        if (S & BIT_MASK(idx)) printf("%d, ", idx);
+/*
+    prints out the n of 2^n
+*/
+void displaySet(char* label, SET A) {
+    printf("%5s = {  ", label);
+    for(int idx = 0; idx < MAX_BITS; idx++) {
+        if ((A & BIT_MASK(idx)) != 0) printf("%d, ", idx);
     }
-
-    printf("}\n");
+    printf("\b\b  }\n");
 }
 
-
-bool equal(SET A, SET B) {
-    return A == B;
+/*
+       data = 0
+          A = 0110 0010
+    mask(0) = 0000 0001
+A | mask(0) = 0110 0011
+*/
+void insert(SET* A, int data) {
+    if (data < MAX_BITS) *A |= (BIT_MASK(data));
 }
 
-
-SET* Union(SET A, SET B) {
-    SET* C = malloc(sizeof(SET));
-    if (C != NULL) {
-        init(C);
-        
-        *C = A | B;
+/*
+     data = 4
+        A = 0110 0011
+  mask(4) = 0001 0000
+ A & mask = 0000 0000 (not in set)
+*/
+bool member(SET A, int data)  {
+    if (data < MAX_BITS) {
+        return ((A & BIT_MASK(data)) != 0) ? true : false;
     }
-
-    return C;
+    return false;
 }
 
-SET* Intersection(SET A, SET B) {
-    SET* C = malloc(sizeof(SET));
-    if (C != NULL) {
-        init(C);
-        
-        *C = A & B;
-    }
-
-    return C;
+/*
+    data = 2
+ mask(2) = 0000 0010
+       A = 0110 0011
+~mask(2) = 1111 1101
+       A = 0110 0001
+*/
+void delete(SET* A, int data) {
+    if (data < MAX_BITS) *A &= ~(BIT_MASK(data));
 }
 
-SET* Difference(SET A, SET B) {
-    SET* C = malloc(sizeof(SET));
+/* 
+    A = 0010 0101
+    B = 1101 0001
+A | B = 1111 0101
+*/
+SET Union(SET A, SET B)  {
+    return A | B;
+}
 
-    if (C != NULL) {
-        init(C);
-        
-        *C = A & ~B;
-    }
+/*
+    A = 0010 0101
+    B = 1101 0001
+A & B = 0000 0001
+*/
+SET Intersection(SET A, SET B)  {
+    return A & B;
+}
 
-    return C;
+/*
+    B = 1101 0001
+    A = 0010 0101
+   ~B = 0010 1110
+A & B = 0010 0100
+*/
+SET Difference(SET A, SET B)  {
+    return A & ~B;
 }
