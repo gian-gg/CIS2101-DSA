@@ -10,7 +10,7 @@ int hash(int data) {
 }
 
 void init(DICTIONARY D) {
-    for(int idx = 0; idx < MAX; idx++) {
+    for (int idx = 0; idx < MAX; idx++) {
         D[idx] = NULL;
     }
 }
@@ -20,7 +20,12 @@ void insert(DICTIONARY D, int data) {
 
     if (newNode != NULL) {
         nodetype *trav;
-        for(trav = &(D[hash(data)]); *trav != NULL && (*trav)->data != data; trav = &((*trav)->link)) {}
+
+        // Traverse the chain at D[hash(data)] until we find the end
+        // or detect duplicate data
+        for (trav = &(D[hash(data)]); 
+             *trav != NULL && (*trav)->data != data; 
+             trav = &((*trav)->link)) {}
 
         newNode->data = data;
         newNode->link = *trav;
@@ -30,7 +35,11 @@ void insert(DICTIONARY D, int data) {
 
 void delete(DICTIONARY D, int data) {
     nodetype *trav;
-    for(trav = &(D[hash(data)]); *trav != NULL && (*trav)->data != data; trav = &((*trav)->link)) {}
+
+    // Traverse until element is found or chain ends
+    for (trav = &(D[hash(data)]); 
+         *trav != NULL && (*trav)->data != data; 
+         trav = &((*trav)->link)) {}
 
     if (*trav != NULL) {
         nodetype temp = *trav;
@@ -41,16 +50,20 @@ void delete(DICTIONARY D, int data) {
 
 bool member(DICTIONARY D, int data) {
     nodetype trav;
-    for(trav = D[hash(data)]; trav != NULL && trav->data != data; trav = trav->link) {}
+
+    // Traverse through the linked list at hash(data)
+    for (trav = D[hash(data)]; 
+         trav != NULL && trav->data != data; 
+         trav = trav->link) {}
 
     return (trav != NULL);
 }
 
 void visualize(DICTIONARY D) {
-    for(int idx = 0; idx < MAX; idx++) {
+    for (int idx = 0; idx < MAX; idx++) {
         printf("[ %d ]", idx);
         
-        for(nodetype trav = D[idx]; trav != NULL; trav = trav->link) {
+        for (nodetype trav = D[idx]; trav != NULL; trav = trav->link) {
             printf(" -> %d", trav->data);
         }
 
@@ -60,8 +73,8 @@ void visualize(DICTIONARY D) {
 }
 
 void display(DICTIONARY D) {
-    for(int idx = 0; idx < MAX; idx++) {
-        for(nodetype trav = D[idx]; trav != NULL; trav = trav->link) {
+    for (int idx = 0; idx < MAX; idx++) {
+        for (nodetype trav = D[idx]; trav != NULL; trav = trav->link) {
             printf("%d, ", trav->data);
         }
     }
