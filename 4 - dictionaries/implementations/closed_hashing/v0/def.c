@@ -17,48 +17,59 @@ void init(DICTIONARY D) {
 }
 
 void insert(DICTIONARY D, int data) {
-    int hashValue = hash(data);
+    // Step 1: Check if the data already exists — avoid duplicates
+    if (member(D, data) != true) { 
+        int idx = hash(data);              // Compute starting index using hash function
+        int firstAvail = -1;               // To store index of the first DELETED slot (if any)
+        int stop = (idx + MAX - 1) % MAX;  // Define stopping point (one step before starting index)
 
-    // Probe linearly to find an available slot
-    int idx, trav;
-    for (idx = 0, trav = hashValue; 
-         idx < MAX && D[trav] != EMPTY && D[trav] != DELETED; 
-         idx++, trav = (hashValue + idx) % MAX) {}
+        // Step 2: Linear probing with DELETED-slot reuse
+        while (D[idx] != EMPTY && D[idx] != data && idx != stop) {
+            // Remember the first DELETED slot encountered (to reuse later)
+            if (firstAvail == -1 && D[idx] == DELETED) {
+                firstAvail = idx;
+            }
 
-    if (idx < MAX) {  // Found a valid slot (either EMPTY or DELETED)
-        D[trav] = data;
-    } else {
-        printf("Hash table full! Cannot insert %d\n", data);
+            // Move to the next slot (wrap around using modulo)
+            idx = (idx + 1) % MAX;
+        }
+
+        // Step 3: Decide where to insert the new data
+        // - If we stopped at an EMPTY slot, insert there.
+        // - If we found a DELETED slot earlier, insert there instead.
+        if (D[idx] == EMPTY || (D[idx] != data && firstAvail != -1)) {
+            D[(firstAvail == -1) ? idx : firstAvail] = data;
+        }
     }
 }
 
+
 void delete(DICTIONARY D, int data) {
-    int hashValue = hash(data);
+    int idx, stop;
 
-    // Search for the data using linear probing
-    int idx, trav;
-    for (idx = 0, trav = hashValue; 
-         idx < MAX && D[trav] != EMPTY && D[trav] != data; 
-         idx++, trav = (hashValue + idx) % MAX) {}
+    // Step 1: Initialize starting and stopping indices
+    // - Start at the hash index for the given data
+    // - Stop one slot before the starting index (to avoid infinite loop)
+    for(idx = hash(data), stop = (idx + MAX - 1) % MAX;
+        idx != stop && D[idx] != EMPTY && D[idx] != data;
+        idx = (idx + 1) % MAX) {}
 
-    if (idx < MAX && D[trav] == data) {
-        D[trav] = DELETED;
-    } else {
-        printf("%d not found in dictionary\n", data);
+    // Step 2: If the data is found, mark the slot as DELETED
+    // - This allows reuse of the slot during future insertions
+    if (D[idx] == data) {
+        D[idx] = DELETED;
     }
 }
 
 bool member(DICTIONARY D, int data) {
-    int hashValue = hash(data);
+    int idx, stop;
+    for(idx = hash(data), stop = (idx + MAX - 1) % MAX;
+        idx != stop && D[idx] != EMPTY && D[idx] != data;
+        idx = (idx + 1) % MAX) {}
 
-    // Probe through the table until found or hit EMPTY
-    int idx, trav;
-    for (idx = 0, trav = hashValue; 
-         idx < MAX && D[trav] != EMPTY && D[trav] != data; 
-         idx++, trav = (hashValue + idx) % MAX) {}
-
-    return (idx < MAX && D[trav] == data) ? true : false;
+    return (D[idx] == data) ? true : false;
 }
+
 
 void visualize(DICTIONARY D) {
     for (int idx = 0; idx < MAX; idx++) {
