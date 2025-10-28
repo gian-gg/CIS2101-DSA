@@ -1,128 +1,91 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 
-#define MAX  10
+#define EMPTY -1
+#define SIZE 10
+
 
 typedef struct {
-  int elem[MAX];
-  int lastNdx;
-} MinHeap;
+    int elems[SIZE];
+    int count;
+} MINHEAP;
 
-void init(MinHeap *T);
-void insertMin(MinHeap *T, int data);
-int deleteMin(MinHeap *T);
-void display(MinHeap T);
+void init(MINHEAP*);
+void display(MINHEAP);
 
-MinHeap* insertAllMinHeap(MinHeap T);
-MinHeap* heapSort(MinHeap T);
-
+void insert(MINHEAP*,int);
+int deleteMin(MINHEAP*);
 
 int main() {
-    MinHeap T;
-    init(&T);
+    MINHEAP minTree;
+    init(&minTree);
 
-    MinHeap UnsortedTree = {{10, 15, 20, 17, 25, 30, 40, 5}, 7};
+    insert(&minTree, 40);
+    insert(&minTree, 10);
+    insert(&minTree, 30);
+    insert(&minTree, 1);
+    insert(&minTree, 100);
+    insert(&minTree, 20);
 
-    // MinHeap* SortedTree = insertAllMinHeap(UnsortedTree);
-    MinHeap* SortedTree = heapSort(UnsortedTree);
+    display(minTree);
 
-    display(*SortedTree);
-
+    deleteMin(&minTree);
+    display(minTree);
 
     return 0;
 }
 
-void init(MinHeap *T) {
-    T->lastNdx = -1;
+void init(MINHEAP* T) {
+    T->count = EMPTY;
 }
 
-void insertMin(MinHeap *T, int data) {
-    if(T->lastNdx + 1 < MAX) {
-        int child = ++(T->lastNdx);
-        int parent = (child - 1) / 2;
-
-        while(child > 0 && T->elem[parent] > data) {
-            T->elem[child] = T->elem[parent];
-
-            child = parent;
-            parent = (parent - 1) / 2;
-        }
-
-        T->elem[child] = data;
+void display(MINHEAP T) {
+    int size = T.count;
+    for(int idx = 0; idx <= size; idx++) {
+        printf("%d ", T.elems[idx]);
     }
-}
-
-int deleteMin(MinHeap *T) {
-    int temp = -1;
-    if(T->lastNdx >= 0) {
-        temp = T->elem[0];
-        int data = T->elem[T->lastNdx--];
-
-        int parent = 0;
-        int LC = parent * 2 + 1;
-        int RC = LC + 1;
-
-        int child = T->elem[LC] < T->elem[RC] ? LC : RC;
-
-        while(child <= T->lastNdx && T->elem[child] < data) {
-            T->elem[parent] = T->elem[child];
-
-            parent = child;
-            LC = parent * 2 + 1;
-            RC = LC + 1;
-            child = T->elem[LC] < T->elem[RC] ? LC : RC;
-        }
-
-        T->elem[parent] = data;
-    }
-
-    return temp;
-}
-
-void display(MinHeap T) {
-    printf("TREE: ");
-    for(int i = 0; i <= T.lastNdx; i++) {
-        printf("%d ", T.elem[i]);
-    }
-
     printf("\n");
 }
 
-MinHeap* insertAllMinHeap(MinHeap UnsortedTree) {
-    MinHeap* result = (MinHeap*)malloc(sizeof(MinHeap));
-    if (result != NULL) {
-        init(result);
-
-        for(int idx = 0; idx <= UnsortedTree.lastNdx; idx++) {
-            insertMin(result, UnsortedTree.elem[idx]);
+void insert(MINHEAP* T, int data) {
+    if (T->count + 1 < SIZE) {
+        int child = ++(T->count);
+        int parent = (child-1)/2;
+        
+        while(child > 0 && T->elems[parent] > data) {
+            T->elems[child] = T->elems[parent];
+            
+            child = parent;
+            parent = (child-1)/2;
         }
-
-        return result;
+        
+        T->elems[child] = data;
     }
-
-    free(result);
-    return NULL;
 }
 
-MinHeap* heapSort(MinHeap UnsortedTree) {
-    MinHeap* result = (MinHeap*)malloc(sizeof(MinHeap));
-    if (result != NULL) {
-        init(result);
 
-        MinHeap* SortedTree = insertAllMinHeap(UnsortedTree);
-
-        int temp;
-        int index = SortedTree->lastNdx;
-        while ((temp = deleteMin(SortedTree)) != -1) {
-            result->elem[index--] = temp;
-            result->lastNdx++;
+int deleteMin(MINHEAP* T) {
+    int min = -100;
+    
+    if (T->count > EMPTY) {
+        min = T->elems[0];
+        int data = T->elems[(T->count)--];
+        
+        int parent = 0;
+        int LC = parent*2 +1;
+        int RC = LC+1;
+        int SC = (T->elems[LC] < T->elems[RC]) ? LC : RC;
+        
+        while(SC <= T->count && T->elems[SC] < data) {
+            T->elems[parent] = T->elems[SC];
+            
+            parent = SC;
+            LC = parent*2 +1;
+            RC = LC+1;
+            SC = (T->elems[LC] < T->elems[RC]) ? LC : RC;
         }
-
-        free(SortedTree);
-        return result;
+        
+        T->elems[parent] = data;
     }
-
-    free(result);
-    return NULL;
+    
+    return min;
 }

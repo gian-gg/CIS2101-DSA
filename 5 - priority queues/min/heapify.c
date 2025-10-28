@@ -31,9 +31,10 @@ void heapifySubtree(MinHeap *H, int parent) {
 
 // Utility function to print the heap
 void printHeap(MinHeap H) {
-    int i;
-    for (i = 0; i <= H.lastNdx; i++)
+    for (int  i = 0; i <= H.lastNdx; i++) {
         printf("%d ", H.elem[i]);
+    }
+    
     printf("\n");
 }
 
