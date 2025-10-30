@@ -1,9 +1,5 @@
 #include "header.h"
 
-void mode() {
-    printf("SETS - LINKED LIST IMPLEMENTATION (UNORDERED)\n\n");
-}
-
 void init(SET* S) {
     // An empty set is represented by a NULL head pointer.
     *S = NULL;

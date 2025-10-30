@@ -7,15 +7,18 @@ int main() {
 
     SET A;
     init(&A);
-    insertElem(&A, 1);
-    insertElem(&A, 2);
-    insertElem(&A, 3);
+    insertElem(&A, 100);
+    insertElem(&A, 22);
+    insertElem(&A, 300);
+    insertElem(&A, 10);
 
     SET B;
     init(&B);
-    insertElem(&B, 1);
-    insertElem(&B, 2);
+    insertElem(&B, 12);
+    insertElem(&B, 22);
     insertElem(&B, 3);
+    insertElem(&B, 0);
+    insertElem(&B, 10);
 
     printf("A = ");
     read(A);
