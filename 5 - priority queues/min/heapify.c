@@ -34,7 +34,7 @@ void printHeap(MinHeap H) {
     for (int  i = 0; i <= H.lastNdx; i++) {
         printf("%d ", H.elem[i]);
     }
-    
+
     printf("\n");
 }
 
