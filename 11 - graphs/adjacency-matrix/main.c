@@ -35,7 +35,17 @@ void init(MATRIX M) {
 }
 
 void display(MATRIX M) {
+    printf("[ ] | ");
+    for(int i = 0; i < MAX; i ++) {
+        printf("[%d] ", i);
+    }
+    printf("\n");
+    for(int i = 0; i < MAX; i ++) {
+        printf("-----");
+    }
+    printf("\n");
     for(int row = 0; row < MAX; row++) {
+        printf("[%d] | ",  row);
         for(int col = 0; col < MAX; col++) {
             printf("[%d] ", M[row][col]);
         }
