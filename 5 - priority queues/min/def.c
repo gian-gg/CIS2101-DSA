@@ -1,113 +1,86 @@
 #include "header.h"
 
-// Initialize the heap
-void init(MINHEAP* T) {
-    T->count = EMPTY;
+void init(MINHEAP* M) {
+    M->count = -1;
 }
 
-// Display the heap elems
-void display(MINHEAP T) {
-    for (int index = 0; index <= T.count; index++) {
-        printf("%d ", T.elems[index]);
+void display(MINHEAP M) {
+    if (M.count > -1) {
+        for(int i = 0; i <= M.count; i++)  {
+            printf("%d ", M.heap[i]);
+        }
+        printf("\n");
+    } else {
+        printf("HEAP IS EMPTY!\n");
     }
-    printf("\n");
 }
 
-// Insert a value into the heap (maintaining min-heap property)
-void insert(MINHEAP* T, int value) {
-    if (T->count + 1 < SIZE) {  // Check if heap is full
-        int child = ++(T->count);
-        int parent = (child - 1) / 2;
+void heapify(MINHEAP* M, int root) {
+    // initalize variables
+    int smallest = root;
+    int LC = 2*root+1;
+    int RC = LC+1;
 
-        // Heapify up
-        while (child > 0 && value < T->elems[parent]) {
-            T->elems[child] = T->elems[parent];
+    // check if left child exists and compare it to smallest
+    if (LC <= M->count && M->heap[LC] < M->heap[smallest]) {
+        smallest = LC;
+    }
+    // check if right child exists and compare it to smallest
+    if (RC <= M->count && M->heap[RC] < M->heap[smallest]) {
+        smallest = RC;
+    }
+
+    // if the smallest is not the root then swap and continue heapify
+    if (smallest != root) {
+        int temp = M->heap[root];
+        M->heap[root] = M->heap[smallest];
+        M->heap[smallest] = temp;
+
+        heapify(M, smallest);
+    }
+}
+
+void insert(MINHEAP* M, int val) {
+    if ((M->count+1) < MAX) { // check if heap is full
+        // initialize variables
+        int child = ++(M->count);
+        int parent = (child-1)/2;
+
+        // heapify up (put val in the correct location)
+        while(child > 0 && val < M->heap[parent]) {
+            M->heap[child] = M->heap[parent];
+
             child = parent;
-            parent = (child - 1) / 2;
+            parent = (child-1)/2;
         }
 
-        T->elems[child] = value;
+        M->heap[child] = val;
+
+        printf("Inserted %d\n", val);
+    } else {
+        printf("HEAP IS FULL!\n");
     }
 }
 
-// Delete and return the minimum element (root of the heap)
-int deleteMin(MINHEAP* T) {
-    int min = EMPTY;
-    if (T->count > EMPTY) {
-        min = T->elems[0];
-        int last = T->elems[T->count--]; // Get last elem and shrink heap
+int deleteMin(MINHEAP* M) {
+    int min = -1;
+    // check if heap is not empty
+    if (M->count > min) {
+        // get root(min) and replace with farthest descendant
+        min = M->heap[0];
+        M->heap[0] = M->heap[(M->count)--];
 
-        int parent = 0;
-        int smallest;
-
-        // Heapify down
-        while ((smallest = 2 * parent + 1) <= T->count) {
-            int left = smallest;
-            int right = left + 1;
-
-            // Find the smaller child
-            if (right <= T->count && T->elems[right] < T->elems[left]) {
-                smallest = right;
-            }
-
-            // Stop if the last value is already smaller than its children
-            if (last <= T->elems[smallest]) break;
-
-            // Move the smaller child up
-            T->elems[parent] = T->elems[smallest];
-            parent = smallest;
-        }
-
-        T->elems[parent] = last; // Place last elem in correct spot
+        // heapify down, place new root at the correct location
+        heapify(M, 0);
     }
 
     return min;
 }
 
-// Builds a new min-heap by inserting all elements from an unsorted structure.
-MINHEAP* insertAll(MINHEAP UnsortedTree) {
-    // Allocate memory for the new heap
-    MINHEAP* result = (MINHEAP*)malloc(sizeof(MINHEAP));
-    if (result != NULL) {
-        init(result); // Initialize the new heap
-
-        // Loop through all elements in the input and insert them
-        for (int idx = 0; idx <= UnsortedTree.count; idx++) {
-            // The insert() function automatically handles heapification
-            insert(result, UnsortedTree.elems[idx]);
-        }
-
-        return result;
+void heapSort(MINHEAP* M) {
+    int ogSize = M->count;
+    for(int idx = ogSize; idx > -1; idx--) {
+        M->heap[idx] = deleteMin(M);
     }
-
-    free(result); // free(NULL) is safe
-    return NULL;  // Return NULL if malloc failed
-}
-
-// Sorts elements in descending order using the heap.
-MINHEAP* heapSort(MINHEAP UnsortedTree) {
-    // Allocate memory for the final sorted array (in a heap struct)
-    MINHEAP* result = (MINHEAP*)malloc(sizeof(MINHEAP));
-    if (result != NULL) {
-        init(result);
-
-        // 1. Build a valid min-heap from the unsorted data
-        MINHEAP* SortedTree = insertAll(UnsortedTree);
-
-        int temp;
-        int index = SortedTree->count; // Start placing elements from the end
-
-        // 2. Repeatedly extract the minimum element from the heap
-        while ((temp = deleteMin(SortedTree)) != -1) {
-            // Place the smallest element at the end of the result array
-            result->elems[index--] = temp;
-            result->count++;
-        }
-
-        free(SortedTree); // Free the temporary heap
-        return result;    // Return the struct containing the sorted array
-    }
-
-    free(result);
-    return NULL;
+    M->count = ogSize;
 }

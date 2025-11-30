@@ -7,17 +7,24 @@
 #define SIZE 10
 #define EMPTY -1
 
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 10
+
 typedef struct {
-    int elems[SIZE];
+    int heap[MAX];
     int count;
 } MINHEAP;
 
 void init(MINHEAP*);
-void display(MINHEAP);
 void insert(MINHEAP*, int);
 int deleteMin(MINHEAP*);
+void heapify(MINHEAP*, int);
 
-MINHEAP* insertAll(MINHEAP);
-MINHEAP* heapSort(MINHEAP T);
+void heapSort(MINHEAP*);
+
+void display(MINHEAP);
+
 
 #endif
