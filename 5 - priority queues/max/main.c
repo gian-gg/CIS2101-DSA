@@ -1,155 +1,122 @@
-#include "header.h"
+#include <stdio.h>
+
+#define MAX 10
+
+typedef struct {
+    int heap[MAX];
+    int count;
+} MAXHEAP;
+
+void init(MAXHEAP*);
+void insert(MAXHEAP*,int);
+int deleteMax(MAXHEAP*);
+void display(MAXHEAP);
+
+void heapify(MAXHEAP*,int);
+void heapsort(MAXHEAP*);
 
 int main() {
-    printf("--- Running MAXHEAP Tests (with Visualization) ---\n\n");
+    MAXHEAP M;
+    init(&M);
 
-    // --- Test 1: Basic Insert and deleteMax Order ---
-    printf("Test 1: Insert and deleteMax functionality...\n");
-    MAXHEAP heap;
-    init(&heap);
+    insert(&M, 10);
+    insert(&M, 20);
+    insert(&M, 5);
+    insert(&M, 30);
+    insert(&M, 15);
 
-    int values[] = {40, 10, 30, 1, 100, 20};
-    int totalValues = sizeof(values) / sizeof(values[0]);
+    display(M);
 
-    // Visualize each insert
-    for (int index = 0; index < totalValues; index++) {
-        printf("  Inserting: %d\n", values[index]);
-        insert(&heap, values[index]);
-        printf("    Heap state: ");
-        display(heap); // VISUALIZATION
+    printf("deleteMax: %d\n", deleteMax(&M));
+    display(M);
+
+    heapsort(&M);
+    display(M);
+
+
+    return 0;
+}
+
+void init(MAXHEAP* M) {
+    M->count = -1;
+}
+
+void insert(MAXHEAP* M, int key) {
+    if ((M->count + 1) >= MAX) return;
+
+    int child = ++(M->count);
+    int parent = (child-1)/2;
+
+    while(child > 0 && key > M->heap[parent]) {
+        M->heap[child] = M->heap[parent];
+
+        child = parent;
+        parent = (child-1)/2;
     }
 
-    printf("\n  Final heap after all inserts:\n");
-    printf("    Heap state: ");
-    display(heap); // VISUALIZATION
+    M->heap[child] = key;
+}
 
-    // Check root element (should be the max)
-    if (heap.elems[0] != 100) {
-        printf("  [TEST FAILED]\n");
-        printf("  ERROR: Root element after inserts was %d, expected 100.\n", heap.elems[0]);
-        return 1;
-    }
+void heapify(MAXHEAP* M, int root) {
+    while (1) {
+        int largest = root;
+        int LC = 2 * root + 1;
+        int RC = 2 * root + 2;
 
-    // Visualize each deleteMax (should be in descending order)
-    printf("\n  Deleting all elements:\n");
-    int expected_delete_order[] = {100, 40, 30, 20, 10, 1}; // Max to min
-    for (int i = 0; i < totalValues; i++) {
-        int max = deleteMax(&heap);
-        printf("  Deleted: %d\n", max);
-
-        if (max != expected_delete_order[i]) {
-            printf("  [TEST FAILED]\n");
-            printf("  ERROR: deleteMax() call %d: Got %d, expected %d.\n", i + 1, max, expected_delete_order[i]);
-            return 1;
+        if (LC <= M->count && M->heap[LC] > M->heap[largest]) {
+            largest = LC;
         }
 
-        printf("    Heap state: ");
-        display(heap); // VISUALIZATION
-    }
-    printf("  [Test Passed]\n\n");
+        if (RC <= M->count && M->heap[RC] > M->heap[largest]) {
+            largest = RC;
+        }
 
-    // --- Test 2: Edge Case - deleteMax from Empty Heap ---
-    printf("Test 2: deleteMax from an empty heap...\n");
-    printf("  Current state (should be empty):\n");
-    printf("    Heap state: ");
-    display(heap); // VISUALIZATION
+        if (largest != root) {
+            int temp = M->heap[root];
+            M->heap[root] = M->heap[largest];
+            M->heap[largest] = temp;
 
-    if (heap.count != EMPTY) {
-        printf("  [TEST FAILED]\n");
-        printf("  ERROR: Heap.count was %d after all deletes, expected %d.\n", heap.count, EMPTY);
-        return 1;
-    }
-
-    int max = deleteMax(&heap);
-    printf("  Attempted deleteMax, returned: %d\n", max);
-    printf("    Heap state: ");
-    display(heap); // VISUALIZATION
-
-    if (max != EMPTY) {
-        printf("  [TEST FAILED]\n");
-        printf("  ERROR: deleteMax() from empty heap: Got %d, expected %d.\n", max, EMPTY);
-        return 1;
-    }
-    printf("  [Test Passed]\n\n");
-
-    // --- Test 3: heapSort Functionality ---
-    printf("Test 3: heapSort (ascending order)...\n");
-    MAXHEAP unsorted;
-    init(&unsorted);
-
-    for (int i = 0; i < totalValues; i++) {
-        unsorted.elems[i] = values[i];
-        unsorted.count++;
-    }
-
-    printf("  Unsorted input data:\n");
-    printf("    Array state: ");
-    display(unsorted); // VISUALIZATION
-
-    // heapSort with a MAX-heap produces an ASCENDING array
-    int expected_sort_order[] = {1, 10, 20, 30, 40, 100};
-    MAXHEAP* sortedResult = heapSort(unsorted);
-
-    if (sortedResult == NULL) {
-        printf("  [TEST FAILED]\n");
-        printf("  ERROR: heapSort() returned NULL (malloc failed?).\n");
-        return 1;
-    }
-
-    printf("  Sorted result (ascending):\n");
-    printf("    Array state: ");
-    display(*sortedResult); // VISUALIZATION
-
-    // Compare the sorted array
-    for (int i = 0; i < totalValues; i++) {
-        if (sortedResult->elems[i] != expected_sort_order[i]) {
-            printf("  [TEST FAILED]\n");
-            printf("  ERROR: heapSort() at index %d: Got %d, expected %d.\n", i, sortedResult->elems[i], expected_sort_order[i]);
-            free(sortedResult);
-            return 1;
+            root = largest;
+        } else {
+            break;
         }
     }
-    free(sortedResult);
-    printf("  [Test Passed]\n\n");
+}
 
-    // --- Test 4: Edge Case - Insert into Full Heap ---
-    printf("Test 4: Insert into a full heap...\n");
-    MAXHEAP fullHeap;
-    init(&fullHeap);
+int deleteMax(MAXHEAP* M) {
+    int max = -1;
+    if (M->count > max) {
+        int root = 0;
+        max = M->heap[root];
+        M->heap[root] = M->heap[(M->count)--];
 
-    for (int i = 0; i < SIZE; i++) {
-        insert(&fullHeap, i); // Fill the heap
+        heapify(M, root);
     }
 
-    printf("  Heap after filling to capacity (%d elements):\n", SIZE);
-    printf("    Heap state: ");
-    display(fullHeap); // VISUALIZATION
+    return max;
+}
 
-    if (fullHeap.count != SIZE - 1) {
-        printf("  [TEST FAILED]\n");
-        printf("  ERROR: Count after filling heap is %d, expected %d.\n", fullHeap.count, SIZE - 1);
-        return 1;
+void heapsort(MAXHEAP* M) {
+    for(int i = (M->count-1)/2; i >= 0; i--) {
+        heapify(M, i);
     }
 
-    printf("  Attempting to insert '999' into full heap...\n");
-    insert(&fullHeap, 999);
+    int ogCount = M->count;
+    while(M->count >= 0) {
+        int temp = M->heap[0];
+        M->heap[0] = M->heap[M->count];
+        M->heap[M->count] = temp;
 
-    printf("  Heap state after failed insert (should be unchanged):\n");
-    printf("    Heap state: ");
-    display(fullHeap); // VISUALIZATION
+        M->count--;
 
-    if (fullHeap.count != SIZE - 1) {
-        printf("  [TEST FAILED]\n");
-        printf("  ERROR: Count changed to %d after insert attempt, expected %d.\n", fullHeap.count, SIZE - 1);
-        return 1;
+        heapify(M, 0);
     }
-    printf("  [Test Passed]\n\n");
+    M->count = ogCount;
+}
 
-
-    // --- All Tests Passed ---
-    printf("--------------------------------\n");
-    printf("All tests successful!\n");
-    printf("--------------------------------\n");
-
-    return 0; // Return 0 to indicate success
+void display(MAXHEAP M) {
+    for(int i = 0; i <= M.count; i++) {
+        printf("%d ", M.heap[i]);
+    }
+    printf("\n");
 }
